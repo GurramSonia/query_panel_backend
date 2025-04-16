@@ -1,0 +1,11 @@
+# Use the official MongoDB image as the base image
+FROM mongo:latest
+
+# Expose MongoDB port
+EXPOSE 27017
+
+# Volume to persist data
+VOLUME ["/data/db"] 
+
+# Set the default command to run the MongoDB server
+CMD ["mongod"]

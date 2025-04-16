@@ -1,0 +1,12 @@
+FROM mysql:latest
+
+# Expose MySQL port
+EXPOSE 3306
+
+# Define a volume for MySQL data persistence
+VOLUME ["/var/lib/mysql"]
+
+# Set the default command to run the MySQL server
+CMD ["mysqld"]
+
+

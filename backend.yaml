@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: query-panel
+spec:
+  selector:
+    matchLabels:
+      app: query-panel-backend
+  template:
+    metadata:
+      labels:
+        app: query-panel-backend
+    spec:
+      containers:
+      - name: backend
+        #image:  683819934378.dkr.ecr.us-east-1.amazonaws.com/query-panel:imag-api 
+        image: soniagurramavari/query-panel-backend:v1 # ECR Image# ECR frontend image name
+        ports:
+        - containerPort: 5000
+        env:
+        - name: BaseURL
+          value : "http://localhost:3000/query-ui"
+          #value: "http://frontend-service.query-panel.svc.cluster.local:3000/query-ui"
+          #value: http://a862de0c00aea498b8162d1a7c410d0b-1175022926.us-east-1.elb.amazonaws.com
+          #value: https://devops.altimetrik.io/query-ui
+          
+        - name: FLASK_ENV
+          value: development
+        - name: MYSQL_HOST
+          value: mysql-service
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_DATABASE
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+        - name: MONGO_HOST
+          value: mongo-service
+        - name: MONGO_PORT
+          value: "27017"
+        - name: MONGO_DATABASE
+          value: sonidatabase2
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_INITDB_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_INITDB_ROOT_PASSWORD
+        
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: query-panel
+spec:
+  selector:
+    app: query-panel-backend
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  #type: NodePort
+  #type: LoadBalancer
+  type: ClusterIP
+  

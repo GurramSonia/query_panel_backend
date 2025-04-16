@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: query-panel-ingress
+  namespace: query-panel
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target:  /queryapi/$2
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"  # Enforce SSL redirection
+    nginx.ingress.kubernetes.io/secure-backends: "true"  # Enforce HTTPS to backend services
+spec:
+  ingressClassName: nginx
+  rules:
+    #- host: devops.altimetrik.io
+    - host : backend-service.query-panel.svc.cluster.local
+
+      http:
+        paths:
+        - pathType: ImplementationSpecific
+          path: /queryapi(/|$)(.*)
+          backend:
+            service:
+              name: backend-service
+              port:
+                number: 5000

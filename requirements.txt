@@ -1,0 +1,15 @@
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.0
+Flask-CORS==5.0.0
+Flask-Login==0.6.2
+Flask-PyMongo==2.3.0
+SQLAlchemy==1.4.41
+pymysql==1.0.3
+python-dotenv==1.0.0
+Werkzeug==2.3.7
+#Flask-Mail
+Flask-Mail==0.9.1
+cryptography
+Flask-RESTx==1.1.0
+mysql-connector-python
+
