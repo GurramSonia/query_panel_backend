@@ -28,10 +28,10 @@ class MyCustomApi(Api):
             conf['apidoc_registered'] = True
 
 queryapi= Blueprint('my_blueprint', __name__, url_prefix='/queryapi')
-""" API = MyCustomApi(queryapi, version='1.0', title='QueryPanel API', description='API Querypanel',
-                  validate=True) """
-API = Api(queryapi, version='1.0', title='QueryPanel-APP-API', description='API Querypanel',
+API = MyCustomApi(queryapi, version='1.0', title='QueryPanel API', description='API Querypanel',
                   validate=True) 
+#API = Api(queryapi, version='1.0', title='QueryPanel-APP-API', description='API Querypanel',
+                  #validate=True) 
  
 
 def init_app(app):
