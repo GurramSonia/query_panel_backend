@@ -11,12 +11,21 @@ from settings import MONGO_HOST,MYSQL_HOST
 
 def check_user_existence(username, password):
     # Check MySQL and MongoDB for user
+    print("entered into check user existence",password)
+    print("Decrypted password:", repr(password))
     from src.controller import db,mongo
-    print("entered into check_user_existstence")
     user_sql = db.session.query(User).filter_by(username=username).first()
     print(user_sql)
     user_mongo = mongo.db.users.find_one({"username": username})
     print(user_sql)
+    print(type(password))
+    print(password)
+    print(len(password))
+    print("user password",user_sql.password)
+    password = password.strip()
+    print(len(password))
+    passmatch=check_password_hash(user_sql.password, password)
+    print(passmatch)
     
     if user_sql and check_password_hash(user_sql.password, password):
         return user_sql

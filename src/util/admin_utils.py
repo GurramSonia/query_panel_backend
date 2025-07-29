@@ -126,8 +126,6 @@ def get_available_connections_db(username,database):
 
         print(filtered_connections)
         return filtered_connections
-        #print(connection_list)
-        #return connection_list
     except SQLAlchemyError as e:
         db.session.rollback()
         return {'error': f'Database error: {str(e)}'}, 500

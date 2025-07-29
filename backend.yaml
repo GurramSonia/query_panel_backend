@@ -15,7 +15,8 @@ spec:
       containers:
       - name: backend
         #image:  683819934378.dkr.ecr.us-east-1.amazonaws.com/query-panel:imag-api 
-        image: soniagurramavari/query-panel-backend:v1 # ECR Image# ECR frontend image name
+        image: soniagurramavari/query-panel-backend:v1
+         # ECR Image# ECR frontend image name
         ports:
         - containerPort: 5000
         env:

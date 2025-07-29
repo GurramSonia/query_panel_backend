@@ -4,14 +4,38 @@ import smtplib
 from email.mime.text import MIMEText
 from settings import MAIL_PASSWORD,my_email,BaseURL
 import re
+#from Crypto.Cipher import AES
+from Cryptodome.Cipher import AES
+import base64
+import hashlib
+#from Crypto.Cipher import AES
+import base64
+from Cryptodome.Util.Padding import unpad
+
+""" def decrypt_password(encrypted_password, token, iv_str):
+    key = token.encode('utf-8').ljust(32, b'\0')  # pad to 32 bytes
+    iv = iv_str.encode('utf-8')  # same IV string as on frontend
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+    decrypted = cipher.decrypt(base64.b64decode(encrypted_password))
+    return unpad(decrypted, AES.block_size).decode('utf-8') """
 
 def login_user_service(data):
     from src.util.auth_utils_auth import check_user_existence 
+    from src.util.helpers import  decrypt_password
     from flask import session
     try:
         print("Received data:", data)
         username = data.get('username')
-        password = data.get('password')
+        #password= data.get('password')
+        encrypted_password = data.get('password')
+        iv = data.get('iv')
+        token = data.get('token') 
+        print("token is",token) # Or derive it from session/request
+        # Decrypt password
+        password = decrypt_password(encrypted_password, token, iv)
+        password2=str(password)
+       
+        print("Recieved passord is",password)
         if not username or not password:
             return {"error": "Username and password are required"}, 400
         user = check_user_existence(username, password)
@@ -48,7 +72,14 @@ def signup_user_service(data):
     from src.util.auth_utils_auth import create_user_in_mysql, create_user_in_mongo
     username = data.get('username')
     email = data.get('email')
-    password = data.get('password')
+    #password = data.get('password')
+    encrypted_password = data.get('password')
+    iv = data.get('iv')
+    token = data.get('token') 
+    print("token is",token) # Or derive it from session/request
+    password = decrypt_password(encrypted_password, token, iv)
+    password2=str(password)
+    print("Recieved passord is",password)
     role = data.get('role')
     
     def validate_password(password):
@@ -58,7 +89,9 @@ def signup_user_service(data):
         return True, None
     
     def validate_email(email):
-        email_pattern = r'^[a-zA-Z0-9_.+-]+@altimetrik\.com$'
+        #email_pattern = r'^[a-zA-Z0-9_.+-]+@altimetrik\.com$'
+        email_pattern = r'^[a-zA-Z0-9_.+-]+@gmail\.com$'
+
         if not re.match(email_pattern, email):
             return False, "Email must be a valid email address ending with @altimetrik.com."
         return True, None

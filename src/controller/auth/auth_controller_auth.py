@@ -2,6 +2,24 @@ from flask import  request, jsonify, session
 from flask_restx import Resource
 from src.controller.auth.auth_ns import auth_ns_auth
 from src.controller.auth.auth_models import (login_model,signup_model,current_user_model)
+import os
+import secrets
+from flask import session
+
+@auth_ns_auth.route('/get-encryption-token')
+class  GetToken(Resource):
+    @auth_ns_auth.response(200, 'Got current user details')
+    @auth_ns_auth.response(401, 'Unauthorized')
+    @auth_ns_auth.response(404, 'User not found')
+    def get(self):
+        try:
+            print("entered into get token method in backend")
+            token = secrets.token_hex(16)  # 32-char hex string
+            session['encryption_token'] = token
+            return ({'token': token}),200
+        except Exception as e:
+            print(f"Error in creating a token {e}")
+            return ({"error": "An error occurred"}), 500
 
 @auth_ns_auth.route('/current_user')
 class CurrentUser(Resource):
